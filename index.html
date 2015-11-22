@@ -28,20 +28,27 @@
             $(document).mousemove(function (e) {
                 drawCursorCircle(e.pageX, e.pageY);
             });
-            $('#tutorial').on("mousedown", function () {
+            $('#tutorial').on("mousedown", function (e) {
+                //画点
+                var cpx = e.pageX;
+                var cpy = e.pageY;
+                drawpoint(cpx, cpy);
+                var ppx = cpx;
+                var ppy = cpy;
+                drawline(ppx, ppy, cpx, cpy);
+                //画线
                 $('#tutorial').on("mousemove", function (e) {
                     console.log("in tutorail");
-                    cpx = e.pageX;
-                    cpy = e.pageY;
+                    var cpx = e.pageX;
+                    var cpy = e.pageY;
                     point_array.push([cpx, cpy]);
                     drawline(ppx, ppy, cpx, cpy);
                     ppx = cpx;
                     ppy = cpy;
                 });
-                $('#tutorial').on("mouseup", function (e) { //bind to document to work with IE
+                $(document).on("mouseup", function (e) { //bind to document to work with IE
                     $('#tutorial').off("mousemove");
-                    ppx = undefined;
-                    ppy = undefined;
+                    draw_array = [];    //清空可绘点
                 });
             });
 
@@ -58,6 +65,7 @@
                 ctx.moveTo(x1, y1);
                 ctx.lineTo(x2, y2);
                 ctx.stroke();
+                //遍历已绘的点，将可取点存入array
                 for (i = 0; i < point_array.length; i++) {
                     var x = point_array[i][0];
                     var y = point_array[i][1];
@@ -69,7 +77,9 @@
                         }
                     }
                 }
+                // 取随机点
                 draw_array = getRand(draw_array, 8);
+                // 连接圆附近的随机点
                 for (i = 0; i < draw_array.length; i++) {
                     var xx = draw_array[i][0];
                     var yy = draw_array[i][1];
