@@ -1,0 +1,121 @@
+<html>
+  <head>
+    <title>Canvas tutorial</title>
+
+    <script src="jquery-1.11.3.js"></script>
+    <script type="text/javascript">
+
+        //保存上一个点
+        var ppx, ppy;
+        //保存当前点
+        var cpx, cpy;
+        //已绘点集合
+        var point_array = [];
+        //绘制点集合
+        var draw_array =[];
+        //连接范围半径
+        var radius = 50;
+      $(function(){
+
+        var canvas = document.getElementById('tutorial');
+        if (canvas.getContext) {
+          var ctx = canvas.getContext('2d');
+        }
+//        //for cursor
+//        var cursor_canvas = document.getElementById('cursor');
+//        if (cursor_canvas.getContext) {
+//          var cursor_ctx = cursor_canvas.getContext('2d');
+//        }
+        ///////
+        $('#tutorial').on("click", function(e){
+          drawpoint(e.pageX, e.pageY);
+
+        });
+//        $('#cursor').on("mousemove", function(e){
+//          console.log("in cursor canvas");
+//          drawCursorCircle(e.pageX, e.pageY);
+//        });
+        $('#tutorial').on("mousedown", function(){
+          $('#tutorial').on("mousemove", function(e){
+//            console.log("in tutorail");
+            cpx = e.pageX;
+            cpy = e.pageY;
+            point_array.push([cpx, cpy]);
+            drawline(ppx, ppy, cpx, cpy);
+            ppx = cpx;
+            ppy = cpy;
+          });
+          $(document).one("mouseup", function(){ //bind to document to work with IE
+            $('#tutorial').off("mousemove");
+            ppx = undefined; ppy= undefined;
+          });
+        });
+        //================================
+        //function define
+        var drawpoint = function(x, y){
+          ctx.fillStyle = "rgb(0,0,0)";
+          ctx.fillRect (x ,y, 1, 1);
+//          console.log(ctx.getImageData(x, y, 1, 1).data);
+        };
+        var drawline = function(x1,y1,x2,y2){
+          ctx.beginPath();
+          ctx.moveTo(x1,y1);
+          ctx.lineTo(x2,y2);
+          ctx.stroke();
+          for(i=0; i < point_array.length; i++){
+              var x = point_array[i][0];
+              var y = point_array[i][1];
+            if(x < x2 + radius && x > x2 - radius){
+                if(y < y2 + radius && y > y2 - radius ){
+                    if ( (x - x2) * (x - x2) + (y - y2) * (y - y2) < radius * radius){
+                        draw_array.push([x, y]);
+                    }
+                }
+            }
+          }
+            draw_array = getRand(draw_array, 8);
+            for(i = 0; i< draw_array.length; i++){
+                var xx = draw_array[i][0];
+                var yy = draw_array[i][1];
+                ctx.moveTo(xx, yy);
+                ctx.lineTo(x2, y2);
+                ctx.lineWidth = 0.03;
+                ctx.stroke();
+            }
+        };
+        var getRand =  function(arr, len) {
+              arr.sort(function () {
+                  return Math.random()-0.5;
+              });
+              return arr.slice(0, len);
+        };
+//        var drawCursorCircle = function(x,y){
+//          cursor_ctx.fillStyle = "rgb(0,0,0)";
+//          cursor_ctx.beginPath();
+//          var radius = 20;
+//          cursor_ctx.arc(x,y,radius,0, 2 * Math.PI);
+//          cursor_ctx.stroke();
+//        };
+      });
+
+    </script>
+    <style type="text/css">
+      #tutorial {
+        border: 1px solid black;
+      }
+      #tutorial:hover {
+        cursor: crosshair;
+      }
+      /*#cursor{*/
+        /*position: absolute;*/
+        /*rgba(255,255,255,0.2);*/
+        /*display: none;*/
+        /*/!*z-index: -1;*!/*/
+      /*}*/
+    </style>
+  </head>
+  <body>
+  <!--<canvas id="cursor" width="640" height="480"></canvas>-->
+  <canvas id="tutorial" width="640" height="480"></canvas>
+  </body>
+</html>
