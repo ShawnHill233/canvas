@@ -15,6 +15,8 @@
         var draw_array = [];
         //连接范围半径
         var radius = 50;
+        //线的颜色
+        var line_color = 'black';
         $(document).ready(function() {
             var canvas = document.getElementById('tutorial');
             if (canvas.getContext) {
@@ -57,7 +59,7 @@
             //function define
             //画点
             var drawpoint = function (x, y) {
-                ctx.fillStyle = "rgb(0,0,0)";
+                ctx.strokeStyle = line_color;
                 ctx.fillRect(x, y, 1, 1);
             };
             //画线（点是不连续的)
@@ -99,7 +101,6 @@
             };
             //鼠标跟随的圆
             var drawCursorCircle = function (x, y) {
-                cursor_ctx.fillStyle = "rgb(0,0,0)";
                 cursor_ctx.clearRect(0, 0, canvas.width, canvas.height);
                 //大圆
                 cursor_ctx.beginPath();
@@ -113,6 +114,11 @@
                 cursor_ctx.lineWidth = 0.5;
                 cursor_ctx.stroke();
             };
+
+            //更换颜色
+            $('#color-list li').on('click', function(){
+                line_color = $(this).attr('id');
+            });
         });
 
     </script>
@@ -130,10 +136,41 @@
             rgba(255, 255, 255, 0.2);
             z-index: -1;
         }
+        canvas {
+            float: left;
+        }
+        /* color-list */
+        #color-list {
+            float: left;
+            margin-left: 5px;
+        }
+        #color-list ul {
+            list-style-type: none;
+            margin: 0;
+            float: left;
+            padding: 0;
+        }
+        #color-list li {
+            width: 40px;
+            height: 40px;
+            margin-top: 2px;
+        }
+        #red { background-color: red; }
+        #green { background-color: green; }
+        #yellow { background-color: yellow; }
+        #black { background-color: black; }
     </style>
 </head>
 <body>
 <canvas id="cursor" width="640" height="480"></canvas>
 <canvas id="tutorial" width="640" height="480"></canvas>
+<div id="color-list">
+    <ul>
+        <li id="red"></li>
+        <li id="green"></li>
+        <li id="yellow"></li>
+        <li id="black"></li>
+    </ul>
+</div>
 </body>
 </html>
