@@ -15,7 +15,7 @@
         var draw_array = [];
         //连接范围半径
         var radius = 50;
-        $(function () {
+        $(document).ready(function() {
             var canvas = document.getElementById('tutorial');
             if (canvas.getContext) {
                 var ctx = canvas.getContext('2d');
@@ -26,6 +26,8 @@
                 var cursor_ctx = cursor_canvas.getContext('2d');
             }
             $(document).mousemove(function (e) {
+                draw_array = [];    //清空可绘点
+
                 drawCursorCircle(e.pageX, e.pageY);
             });
             $('#tutorial').on("mousedown", function (e) {
@@ -37,7 +39,7 @@
                 var ppy = cpy;
                 drawline(ppx, ppy, cpx, cpy);
                 //画线
-                $('#tutorial').on("mousemove", function (e) {
+                $(this).on("mousemove", function (e) {
                     console.log("in tutorail");
                     var cpx = e.pageX;
                     var cpy = e.pageY;
@@ -48,7 +50,6 @@
                 });
                 $(document).on("mouseup", function (e) { //bind to document to work with IE
                     $('#tutorial').off("mousemove");
-                    draw_array = [];    //清空可绘点
                 });
             });
 
@@ -85,7 +86,7 @@
                     var yy = draw_array[i][1];
                     ctx.moveTo(xx, yy);
                     ctx.lineTo(x2, y2);
-                    ctx.lineWidth = 0.03;
+                    ctx.lineWidth = 0.09;
                     ctx.stroke();
                 }
             };
@@ -103,11 +104,13 @@
                 //大圆
                 cursor_ctx.beginPath();
                 cursor_ctx.arc(x, y, radius, 0, 2 * Math.PI);
-                cursor_ctx.lineWidth = 0.2;
+                cursor_ctx.lineWidth = 0.1;
                 cursor_ctx.stroke();
                 //中心的圆
+                cursor_ctx.beginPath();
                 cursor_ctx.moveTo(x,y);
-                cursor_ctx.arc(x, y, 3, 0, 2* Math.PI);
+                cursor_ctx.arc(x, y, 2, 0, 2 * Math.PI);
+                cursor_ctx.lineWidth = 0.5;
                 cursor_ctx.stroke();
             };
         });
