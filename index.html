@@ -34,12 +34,16 @@
             });
             $('#tutorial').on("mousedown", function (e) {
                 //画点
-                var cpx = e.pageX;
-                var cpy = e.pageY;
+
+                cpx = e.pageX;
+                cpy = e.pageY;
                 drawpoint(cpx, cpy);
-                var ppx = cpx;
-                var ppy = cpy;
-                drawline(ppx, ppy, cpx, cpy);
+                if(Math.abs(cpx - ppx) < radius && Math.abs(cpy - ppy) < radius){
+                    drawline(ppx, ppy, cpx, cpy);
+                }
+                ppx = cpx;
+                ppy = cpy;
+                // drawline(ppx, ppy, cpx, cpy);
                 //画线
                 $(this).on("mousemove", function (e) {
                     console.log("in tutorail");
@@ -63,21 +67,18 @@
                 ctx.fillRect(x, y, 1, 1);
             };
             //画线（点是不连续的)
-            var drawline = function (x1, y1, x2, y2) {
+            var drawline = function (ppx, ppy, cpx, cpy) {
                 ctx.beginPath();
-                ctx.moveTo(x1, y1);
-                ctx.lineTo(x2, y2);
+                ctx.moveTo(ppx, ppy);
+                ctx.lineTo(cpx, cpy);
                 ctx.stroke();
                 //遍历已绘的点，将可取点存入array
+                var x, y;
                 for (i = 0; i < point_array.length; i++) {
-                    var x = point_array[i][0];
-                    var y = point_array[i][1];
-                    if (x < x2 + radius && x > x2 - radius) {
-                        if (y < y2 + radius && y > y2 - radius) {
-                            if ((x - x2) * (x - x2) + (y - y2) * (y - y2) < radius * radius) {
-                                draw_array.push([x, y]);
-                            }
-                        }
+                    x = point_array[i][0];
+                    y = point_array[i][1];
+                    if (Math.abs(x - cpx) < radius && Math.abs(y - cpy) < radius) {
+                        draw_array.push([x, y]);
                     }
                 }
                 // 取随机点
@@ -87,7 +88,7 @@
                     var xx = draw_array[i][0];
                     var yy = draw_array[i][1];
                     ctx.moveTo(xx, yy);
-                    ctx.lineTo(x2, y2);
+                    ctx.lineTo(cpx, cpy);
                     ctx.lineWidth = 0.09;
                     ctx.stroke();
                 }
